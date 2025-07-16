@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clase 1: Introducción a Stata</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <!--
+    Chosen Palette: Calm Harmony
+    Application Structure Plan: He diseñado esta SPA con una estructura vertical de una sola página, dividida en 5 secciones que corresponden a las fases del plan de estudios PACE. Una barra de navegación fija en la parte superior permite un fácil acceso a cada sección. Esta estructura fue elegida porque imita el flujo lógico de una clase, guiando al estudiante desde la bienvenida y el diagnóstico inicial, a través de los conceptos y la práctica, hasta la tarea final. Las interacciones, como diagramas en los que se puede hacer clic y cuestionarios, están integradas para transformar el aprendizaje pasivo en una experiencia activa y atractiva, mejorando la retención.
+    Visualization & Content Choices:
+     - Report Info: Diagrama de la Interfaz de Stata -> Goal: Organizar -> Viz/Presentation: Diagrama interactivo con HTML/CSS (Grid/Flex) -> Interaction: Clic para revelar descripciones -> Justification: Un diagrama interactivo es más atractivo y pedagógico que una lista estática, ayudando a crear un mapa mental de la herramienta. -> Library/Method: Vanilla JS.
+     - Report Info: Cuestionarios -> Goal: Evaluar -> Viz/Presentation: Componente de cuestionario interactivo con HTML/JS -> Interaction: Selección de respuesta y retroalimentación inmediata -> Justification: La retroalimentación instantánea refuerza el aprendizaje y la autoevaluación. -> Library/Method: Vanilla JS.
+     - Report Info: Comandos de Código -> Goal: Facilitar la Práctica -> Viz/Presentation: Bloques de código con botones de "Copiar" -> Interaction: Clic para copiar -> Justification: Reduce la fricción y los errores de tipeo, permitiendo al estudiante centrarse en el propósito del comando. -> Library/Method: Vanilla JS.
+     - Report Info: Tarea -> Goal: Instruir -> Viz/Presentation: Lista de verificación interactiva -> Interaction: Clic para marcar tareas -> Justification: Proporciona una sensación de progreso y claridad sobre las tareas pendientes. -> Library/Method: Vanilla JS.
+    CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Roboto Slab', serif; }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .code-block-container {
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #4A5568;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+        .code-block-container:hover .copy-btn {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-slate-800">
+
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <nav class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-bold text-teal-700">Stata Clase 1</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#bienvenida" class="nav-link text-gray-600 hover:text-teal-600 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent hover:border-teal-600">Bienvenida</a>
+                        <a href="#conceptos" class="nav-link text-gray-600 hover:text-teal-600 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent hover:border-teal-600">Conceptos Stata</a>
+                        <a href="#estadistica-basica" class="nav-link text-gray-600 hover:text-teal-600 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent hover:border-teal-600">Estadística Básica</a>
+                        <a href="#comandos" class="nav-link text-gray-600 hover:text-teal-600 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent hover:border-teal-600">Comandos</a>
+                        <a href="#practica" class="nav-link text-gray-600 hover:text-teal-600 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent hover:border-teal-600">Práctica</a>
+                        <a href="#tarea" class="nav-link text-gray-600 hover:text-teal-600 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent hover:border-teal-600">Tarea</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <section id="bienvenida" class="mb-16 scroll-mt-24">
+            <!-- P (Propósito): Motivar a los estudiantes y establecer el contexto del curso. -->
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Bienvenida a la Introducción a Stata</h2>
+                <p class="mt-4 text-lg text-slate-600">Tu primer paso para dominar el análisis de datos fiscales.</p>
+            </div>
+
+            <!-- A (Actividad): Presentación del curso y sus objetivos. -->
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <h3 class="text-2xl font-bold mb-4">¡Empecemos!</h3>
+                <p class="mb-4 text-slate-700">En esta primera clase, nos sumergiremos en Stata, la herramienta que nos servirá de laboratorio para simular escenarios y analizar el impacto de diversas políticas fiscales. Aprenderemos a navegar por su interfaz y a ejecutar nuestros primeros comandos. El objetivo es que al final de esta sesión te sientas cómodo con el entorno de Stata y listo para los siguientes pasos.</p>
+                <div class="bg-teal-50 border-l-4 border-teal-500 text-teal-800 p-4 rounded-r-lg mt-6">
+                    <p><strong>El gran objetivo:</strong> Aprender a usar Stata para responder preguntas como: ¿qué pasa si el IVA sube un punto? ¿O si cambia una deducción personal en el impuesto a la renta? Hoy sentamos las bases para ello.</p>
+                </div>
+            </div>
+            <!-- C (Comprobación de Comprensión): Observación de la participación y el interés inicial. -->
+            <!-- E (Extensión/Elaboración): Conectar con los objetivos generales del curso. -->
+        </section>
+
+        <section id="conceptos" class="mb-16 scroll-mt-24">
+            <!-- P (Propósito): Introducir la interfaz de Stata y sus componentes principales, así como los conceptos fundamentales de su operación basada en comandos y la importancia del directorio de trabajo. -->
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Conceptos Clave: La Interfaz de Stata</h2>
+                <p class="mt-4 text-lg text-slate-600">Conoce tu espacio de trabajo. Interactúa con el diagrama para aprender sobre cada ventana.</p>
+            </div>
+
+            <!-- A (Actividad): Presentación de la interfaz de Stata y explicación de sus ventanas. -->
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div id="stata-diagram" class="md:col-span-3 grid grid-cols-2 grid-rows-3 gap-2 h-96">
+                        <div data-target="info-results" class="stata-window col-span-2 row-span-2 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500 cursor-pointer hover:bg-teal-100 hover:text-teal-800 transition-colors duration-300">Results</div>
+                        <div data-target="info-review" class="stata-window bg-slate-100 rounded-lg flex items-center justify-center text-slate-500 cursor-pointer hover:bg-teal-100 hover:text-teal-800 transition-colors duration-300">Review</div>
+                        <div data-target="info-variables" class="stata-window bg-slate-100 rounded-lg flex items-center justify-center text-slate-500 cursor-pointer hover:bg-teal-100 hover:text-teal-800 transition-colors duration-300">Variables</div>
+                        <div data-target="info-command" class="stata-window col-span-2 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500 cursor-pointer hover:bg-teal-100 hover:text-teal-800 transition-colors duration-300">Command</div>
+                    </div>
+                    <div id="stata-info-display" class="md:col-span-2 bg-stone-100 p-6 rounded-lg">
+                        <div id="info-default" class="stata-info-content">
+                            <h4 class="font-bold text-lg mb-2">Las Ventanas de Stata</h4>
+                            <p class="text-sm text-slate-600">Haz clic en cualquier ventana del diagrama de la izquierda para ver su descripción aquí. Conocer el propósito de cada una es clave para trabajar de manera eficiente.</p>
+                        </div>
+                        <div id="info-results" class="stata-info-content hidden">
+                            <h4 class="font-bold text-lg mb-2 text-teal-700">Ventana "Results" (Resultados)</h4>
+                            <p class="text-sm text-slate-600">Es la pantalla principal. Aquí es donde Stata muestra los resultados de los comandos que ejecutas, incluyendo tablas, estadísticas y mensajes de error. Es el "escenario" de tu análisis.</p>
+                        </div>
+                        <div id="info-review" class="stata-info-content hidden">
+                            <h4 class="font-bold text-lg mb-2 text-teal-700">Ventana "Review" (Revisión)</h4>
+                            <p class="text-sm text-slate-600">Mantiene un historial de todos los comandos que has ejecutado en la sesión actual. Es increíblemente útil para reutilizar o corregir comandos sin tener que volver a escribirlos.</p>
+                        </div>
+                        <div id="info-variables" class="stata-info-content hidden">
+                            <h4 class="font-bold text-lg mb-2 text-teal-700">Ventana "Variables"</h4>
+                            <p class="text-sm text-slate-600">Muestra una lista de todas las variables en el conjunto de datos que tienes cargado en memoria. Puedes hacer clic en una variable para ver sus propiedades en la ventana "Properties".</p>
+                        </div>
+                        <div id="info-command" class="stata-info-content hidden">
+                            <h4 class="font-bold text-lg mb-2 text-teal-700">Ventana "Command" (Comandos)</h4>
+                            <p class="text-sm text-slate-600">Este es el "cerebro" de la operación. Aquí escribes los comandos que le pides a Stata que ejecute. Cada vez que presionas Enter, Stata procesa tu instrucción.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- C (Comprobación de Comprensión): Preguntas y respuestas durante la explicación. -->
+            <!-- E (Extensión/Elaboración): Preparar para la sección práctica. -->
+        </section>
+
+        <section id="estadistica-basica" class="mb-16 scroll-mt-24">
+            <!-- P (Propósito): Introducir conceptos estadísticos fundamentales relevantes para el análisis de datos. -->
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Estadística Básica Introductoria</h2>
+                <p class="mt-4 text-lg text-slate-600">Los fundamentos numéricos para entender tus datos fiscales.</p>
+            </div>
+
+            <!-- A (Actividad): Presentación de conceptos estadísticos clave. -->
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <p class="mb-6 text-slate-700">Para realizar análisis de impacto de políticas fiscales, es esencial comprender los conceptos básicos de la estadística. Estos nos permiten describir y resumir los datos, que es el primer paso antes de cualquier simulación o modelado.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">Tipos de Variables</h3>
+                        <ul class="list-disc list-inside space-y-2 text-slate-600">
+                            <li><strong>Cuantitativas:</strong> Representan cantidades numéricas medibles.
+                                <ul class="list-circle list-inside ml-5">
+                                    <li><strong>Discretas:</strong> Valores enteros (ej. número de hijos, cantidad de declaraciones).</li>
+                                    <li><strong>Continuas:</strong> Valores con decimales (ej. ingresos, tasas de impuestos).</li>
+                                </ul>
+                            </li>
+                            <li><strong>Cualitativas (Categóricas):</strong> Representan cualidades o categorías.
+                                <ul class="list-circle list-inside ml-5">
+                                    <li><strong>Nominales:</strong> Sin orden (ej. tipo de contribuyente: persona natural, empresa).</li>
+                                    <li><strong>Ordinales:</strong> Con un orden (ej. nivel de educación: primaria, secundaria, superior).</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">Medidas de Tendencia Central</h3>
+                        <ul class="list-disc list-inside space-y-2 text-slate-600">
+                            <li><strong>Media (Promedio):</strong> La suma de todos los valores dividida por el número total de valores. Es sensible a valores extremos.</li>
+                            <li><strong>Mediana:</strong> El valor central en un conjunto de datos ordenado. Divide el conjunto en dos mitades iguales. Menos sensible a valores extremos.</li>
+                            <li><strong>Moda:</strong> El valor que aparece con mayor frecuencia en un conjunto de datos. Útil para datos categóricos.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">Medidas de Dispersión</h3>
+                        <ul class="list-disc list-inside space-y-2 text-slate-600">
+                            <li><strong>Rango:</strong> La diferencia entre el valor máximo y el valor mínimo en un conjunto de datos.</li>
+                            <li><strong>Desviación Estándar:</strong> Mide la dispersión promedio de los datos con respecto a la media. Una desviación estándar alta indica que los puntos de datos están muy dispersos.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- C (Comprobación de Comprensión): Se puede usar el Asistente Conceptual para verificar la comprensión de estos términos. -->
+            <!-- E (Extensión/Elaboración): Conectar estos conceptos con cómo Stata los calcula y presenta en los resultados. -->
+        </section>
+
+        <section id="comandos" class="mb-16 scroll-mt-24">
+            <!-- P (Propósito): Presentar los comandos básicos que se usarán en la clase. -->
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Paleta de Comandos Esenciales</h2>
+                <p class="mt-4 text-lg text-slate-600">Estos son los comandos que dominarás en esta clase.</p>
+            </div>
+
+            <!-- A (Actividad): Mostrar los comandos con su sintaxis y descripción. -->
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="command-item" data-command="cd">
+                    <h3 class="text-xl font-bold mb-2">`cd` (Change Directory)</h3>
+                    <p class="text-slate-600 mb-3">Establece el directorio de trabajo de Stata. Es donde Stata buscará y guardará tus archivos por defecto.</p>
+                    <div class="code-block-container">
+                        <pre class="bg-slate-800 text-white p-3 rounded-md overflow-x-auto text-sm"><code>cd "C:\ruta\a\tu\carpeta"</code></pre>
+                        <button class="copy-btn">Copiar</button>
+                    </div>
+                </div>
+                <div class="command-item" data-command="clear">
+                    <h3 class="text-xl font-bold mb-2">`clear`</h3>
+                    <p class="text-slate-600 mb-3">Limpia la memoria de Stata, eliminando cualquier dataset cargado actualmente. Es útil para empezar un análisis desde cero.</p>
+                    <div class="code-block-container">
+                        <pre class="bg-slate-800 text-white p-3 rounded-md overflow-x-auto text-sm"><code>clear</code></pre>
+                        <button class="copy-btn">Copiar</button>
+                    </div>
+                </div>
+                <div class="command-item" data-command="sysuse">
+                    <h3 class="text-xl font-bold mb-2">`sysuse`</h3>
+                    <p class="text-slate-600 mb-3">Carga un dataset de ejemplo preinstalado en Stata. Perfecto para practicar sin necesidad de importar tus propios datos.</p>
+                    <div class="code-block-container">
+                        <pre class="bg-slate-800 text-white p-3 rounded-md overflow-x-auto text-sm"><code>sysuse nombre_dataset</code></pre>
+                        <button class="copy-btn">Copiar</button>
+                    </div>
+                </div>
+                <div class="command-item" data-command="describe">
+                    <h3 class="text-xl font-bold mb-2">`describe`</h3>
+                    <p class="text-slate-600 mb-3">Muestra un resumen de la estructura del dataset cargado: número de observaciones, variables, tipos de variables, etc.</p>
+                    <div class="code-block-container">
+                        <pre class="bg-slate-800 text-white p-3 rounded-md overflow-x-auto text-sm"><code>describe</code></pre>
+                        <button class="copy-btn">Copiar</button>
+                    </div>
+                </div>
+                <div class="command-item" data-command="browse">
+                    <h3 class="text-xl font-bold mb-2">`browse`</h3>
+                    <p class="text-slate-600 mb-3">Abre el Editor de Datos en modo de solo lectura, permitiéndote ver el contenido del dataset como una hoja de cálculo.</p>
+                    <div class="code-block-container">
+                        <pre class="bg-slate-800 text-white p-3 rounded-md overflow-x-auto text-sm"><code>browse</code></pre>
+                        <button class="copy-btn">Copiar</button>
+                    </div>
+                </div>
+                <div class="command-item" data-command="save">
+                    <h3 class="text-xl font-bold mb-2">`save`</h3>
+                    <p class="text-slate-600 mb-3">Guarda el dataset actual en la memoria de Stata en un archivo `.dta` en tu directorio de trabajo.</p>
+                    <div class="code-block-container">
+                        <pre class="bg-slate-800 text-white p-3 rounded-md overflow-x-auto text-sm"><code>save "nombre_archivo.dta"</code></pre>
+                        <button class="copy-btn">Copiar</button>
+                    </div>
+                </div>
+                <div class="command-item" data-command="help">
+                    <h3 class="text-xl font-bold mb-2">`help`</h3>
+                    <p class="text-slate-600 mb-3">Proporciona acceso a la documentación oficial de Stata para cualquier comando. ¡Tu mejor amigo para el autoaprendizaje!</p>
+                    <div class="code-block-container">
+                        <pre class="bg-slate-800 text-white p-3 rounded-md overflow-x-auto text-sm"><code>help comando</code></pre>
+                        <button class="copy-btn">Copiar</button>
+                    </div>
+                </div>
+            </div>
+            <!-- C (Comprobación de Comprensión): Preguntas rápidas sobre la función de cada comando. -->
+            <!-- E (Extensión/Elaboración): Animar a los estudiantes a explorar la ayuda de cada comando. -->
+        </section>
+
+        <section id="practica" class="mb-16 scroll-mt-24">
+             <!-- P (Propósito): Proporcionar experiencia práctica directa con los comandos básicos de Stata. -->
+             <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Práctica Guiada: Tus Primeros Comandos</h2>
+                <p class="mt-4 text-lg text-slate-600">Es hora de poner manos a la obra. Sigue estos pasos en tu Stata.</p>
+            </div>
+
+            <!-- A (Actividad - Guía de Inicio): Instrucciones para lanzar Stata Portable. -->
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 mb-10">
+                <h3 class="text-2xl font-bold mb-4">Guía de Inicio: Stata 16 Portable</h3>
+                <p class="mb-4 text-slate-700">Recuerda que Stata 16 Portable ya está disponible en Google Classroom. Para comenzar a trabajar, sigue estos pasos:</p>
+                <ol class="list-decimal list-inside space-y-2 text-slate-600">
+                    <li><strong>Descargar:</strong> Baja el archivo comprimido de Stata 16 desde los materiales del curso.</li>
+                    <li><strong>Descomprimir:</strong> Descomprime el archivo en la carpeta de tu preferencia (te sugiero crear una carpeta específica para el curso).</li>
+                    <li><strong>Ejecutar:</strong> Cada vez que quieras usar Stata, ve a la carpeta donde lo descomprimiste y haz doble clic en el <strong>archivo ejecutable</strong> (generalmente un archivo con el icono de Stata y extensión `.exe`).</li>
+                </ol>
+                <p class="mt-4 text-slate-700">¡Listo! Una vez abierto, podemos empezar con los comandos.</p>
+            </div>
+
+            <!-- A (Actividad - Cuestionario Intermedio): Cuestionario conceptual rápido. -->
+            <div id="quiz-conceptual" class="mb-10 bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <h3 class="text-2xl font-bold mb-4">Refuerzo Rápido: Conceptos de Interfaz</h3>
+                <p class="mb-4 text-slate-700">Antes de sumergirnos en la práctica, un breve repaso para asegurar que los conceptos de la interfaz están claros.</p>
+                <div id="quiz-container" class="bg-stone-100 p-6 rounded-lg">
+                    <!-- Quiz content will be injected here by JS -->
+                </div>
+            </div>
+
+            <!-- A (Actividad - Práctica Guiada): Ejecución de comandos. -->
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <h3 class="text-2xl font-bold mb-6">Paso a Paso</h3>
+                <ol class="space-y-8">
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 bg-teal-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">1</div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Configura tu Directorio de Trabajo</h4>
+                            <p class="mb-3 text-slate-600">Dile a Stata dónde guardar y buscar tus archivos. Reemplaza la ruta del ejemplo con la ruta de tu propia carpeta. Esto es CRUCIAL para la organización de tus proyectos de análisis fiscal.</p>
+                            <div class="code-block-container">
+                                <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-stata">cd "C:\Users\TuUsuario\Documentos\CursoStata"</code></pre>
+                                <button class="copy-btn">Copiar</button>
+                            </div>
+                        </div>
+                    </li>
+                     <li class="flex items-start">
+                        <div class="flex-shrink-0 bg-teal-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">2</div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Limpia la Memoria</h4>
+                            <p class="mb-3 text-slate-600">Antes de cargar nuevos datos, es una buena práctica asegurarse de que la memoria de Stata esté vacía. Usa el comando `clear`.</p>
+                            <div class="code-block-container">
+                                <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-stata">clear</code></pre>
+                                <button class="copy-btn">Copiar</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 bg-teal-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">3</div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Carga un Set de Datos de Ejemplo (Economía)</h4>
+                            <p class="mb-3 text-slate-600">Usaremos `uslifeexp.dta`, que contiene datos sobre la esperanza de vida en EE. UU. a lo largo del tiempo. Es un buen ejemplo de datos que podrías analizar en políticas públicas.</p>
+                            <div class="code-block-container">
+                                <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-stata">sysuse uslifeexp</code></pre>
+                                <button class="copy-btn">Copiar</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 bg-teal-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">4</div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Describe y Explora tus Datos</h4>
+                            <p class="mb-3 text-slate-600">Usa `describe` para ver un resumen de tus variables y sus tipos (por ejemplo, si son numéricas o de texto). Luego, usa `browse` para ver los datos en un formato de hoja de cálculo (solo lectura).</p>
+                             <div class="code-block-container">
+                                <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-stata">describe</code></pre>
+                                <button class="copy-btn">Copiar</button>
+                            </div>
+                             <div class="code-block-container mt-2">
+                                <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-stata">browse</code></pre>
+                                <button class="copy-btn">Copiar</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 bg-teal-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">5</div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Busca Ayuda</h4>
+                            <p class="mb-3 text-slate-600">El comando más importante. Si tienes dudas sobre un comando, `help` es tu mejor amigo. Te abrirá la documentación oficial de Stata con todas sus opciones y ejemplos.</p>
+                            <div class="code-block-container">
+                                <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-stata">help describe</code></pre>
+                                <button class="copy-btn">Copiar</button>
+                            </div>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+            <!-- C (Comprobación de Comprensión): Observación directa de la ejecución de los estudiantes, resolución de dudas. -->
+            <!-- E (Extensión/Elaboración): Construir la confianza para la práctica independiente. -->
+        </section>
+
+        <section id="tarea" class="scroll-mt-24">
+             <!-- P (Propósito): Consolidar el aprendizaje y establecer una tarea que refuerce la autonomía y la exploración. -->
+             <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Tarea y Próximos Pasos</h2>
+                <p class="mt-4 text-lg text-slate-600">Consolida lo que aprendiste y prepárate para la siguiente clase.</p>
+            </div>
+
+            <!-- A (Actividad - Pregunta de Práctica): Ejercicio de práctica en clase. -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                    <h3 class="text-2xl font-bold mb-4">Práctica en Clase</h3>
+                    <p class="mb-4 text-slate-600">Usa los últimos minutos de la clase para realizar este ejercicio completo en tu Stata.</p>
+                    <ul id="practice-checklist" class="space-y-3">
+                        <li class="flex items-center"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 mr-3"><span class="text-slate-700">Crear una carpeta `PracticaStata1_TuNombre`.</span></li>
+                        <li class="flex items-center"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 mr-3"><span class="text-slate-700">Usar `cd` para establecerla como directorio de trabajo.</span></li>
+                        <li class="flex items-center"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 mr-3"><span class="text-slate-700">Usar `clear` para limpiar la memoria.</span></li>
+                        <li class="flex items-center"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 mr-3"><span class="text-slate-700">Cargar `sysuse uslifeexp`.</span></li>
+                        <li class="flex items-center"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 mr-3"><span class="text-slate-700">Usar `describe` y `browse`.</span></li>
+                        <li class="flex items-center"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 mr-3"><span class="text-slate-700">Guardar el dataset como `esperanza_vida_practica.dta` usando `save`.</span></li>
+                    </ul>
+                </div>
+                <!-- A (Actividad - Tarea): Tarea para la próxima clase. -->
+                <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                    <h3 class="text-2xl font-bold mb-4">Tarea para la Próxima Clase</h3>
+                     <ul id="homework-checklist" class="space-y-3">
+                        <li class="flex items-start"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 mr-3 mt-1"><span class="text-slate-700"><strong>Práctica de Comandos:</strong> Repetir los comandos (`cd`, `clear`, `sysuse`, `describe`, `browse`, `save`) al menos 5 veces, utilizando diferentes nombres de archivo y, si es posible, explorando diferentes directorios en tu computadora.</span></li>
+                        <li class="flex items-start"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 mr-3 mt-1"><span class="text-slate-700"><strong>Exploración de Ayuda:</strong> Utiliza el comando `help` para explorar la ayuda de Stata para los comandos `sysuse` y `save`. Intenta identificar al menos una opción adicional (por ejemplo, `sysuse, clear` o `save, emptyok`) y piensa para qué podría servir. Anota tus hallazgos.</span></li>
+                        <li class="flex items-start"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 mr-3 mt-1"><span class="text-slate-700"><strong>Lectura Recomendada:</strong> Lee la sección "Getting Started with Stata" o "Basics of Stata" de cualquier manual oficial de Stata 16 que tengas acceso. También, revisa un breve artículo sobre la importancia de la "limpieza y organización de datos" en análisis económicos o fiscales (lo compartiré en Google Classroom).</span></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- C (Comprobación de Comprensión): Observación de la resolución de la pregunta de práctica en clase. La tarea será revisada al inicio de la próxima sesión. -->
+            <!-- E (Extensión/Elaboración): Fomentar el autoaprendizaje y la exploración de la función `help`. -->
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-white mt-16">
+        <div class="max-w-5xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>&copy; 2025 Curso de Stata Básico. ¡Sigue practicando!</p>
+        </div>
+    </footer>
+
+    <div id="copy-feedback" class="fixed bottom-5 right-5 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg opacity-0 transition-opacity duration-300">
+        ¡Copiado!
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const stataWindows = document.querySelectorAll('.stata-window');
+    const infoContents = document.querySelectorAll('.stata-info-content');
+    const infoDefault = document.getElementById('info-default');
+    let activeWindow = null;
+
+    stataWindows.forEach(windowEl => {
+        windowEl.addEventListener('click', () => {
+            const targetId = windowEl.dataset.target;
+            const targetContent = document.getElementById(targetId);
+
+            infoContents.forEach(content => content.classList.add('hidden'));
+
+            if (activeWindow === windowEl) {
+                infoDefault.classList.remove('hidden');
+                activeWindow.classList.remove('bg-teal-600', 'text-white');
+                activeWindow.classList.add('bg-slate-100', 'text-slate-500');
+                activeWindow = null;
+            } else {
+                if (activeWindow) {
+                    activeWindow.classList.remove('bg-teal-600', 'text-white');
+                    activeWindow.classList.add('bg-slate-100', 'text-slate-500');
+                }
+                targetContent.classList.remove('hidden');
+                windowEl.classList.add('bg-teal-600', 'text-white');
+                windowEl.classList.remove('bg-slate-100', 'text-slate-500');
+                activeWindow = windowEl;
+            }
+        });
+    });
+
+    const copyButtons = document.querySelectorAll('.copy-btn');
+    const copyFeedback = document.getElementById('copy-feedback');
+    copyButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const codeBlock = e.target.previousElementSibling.querySelector('code');
+            const codeText = codeBlock.innerText;
+
+            navigator.clipboard.writeText(codeText).then(() => {
+                copyFeedback.classList.remove('opacity-0');
+                setTimeout(() => {
+                    copyFeedback.classList.add('opacity-0');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        });
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    const quizData = [
+        {
+            question: "¿En qué ventana de Stata escribes los comandos que quieres ejecutar?",
+            options: ["Ventana Results", "Ventana Variables", "Ventana Command", "Ventana Properties"],
+            correct: 2
+        },
+        {
+            question: "Si Stata te muestra un error, ¿dónde buscarías el comando que lo causó para corregirlo?",
+            options: ["Ventana Variables", "Ventana Review", "Ventana Properties", "Ventana Command"],
+            correct: 1
+        },
+        {
+            question: "¿Para qué es fundamental establecer un 'directorio de trabajo'?",
+            options: ["Para aumentar la velocidad de Stata", "Para organizar tu proyecto y archivos", "Para cambiar el color de la interfaz", "Para cargar la ayuda más rápido"],
+            correct: 1
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    const quizContainer = document.getElementById('quiz-container');
+
+    function renderQuiz() {
+        const quiz = quizData[currentQuestionIndex];
+        let optionsHtml = '';
+        quiz.options.forEach((option, index) => {
+            optionsHtml += `<button data-index="${index}" class="quiz-option w-full text-left bg-white p-3 rounded-md hover:bg-stone-200 transition-colors duration-200">${option}</button>`;
+        });
+
+        quizContainer.innerHTML = `
+            <p class="font-semibold mb-4">${currentQuestionIndex + 1}. ${quiz.question}</p>
+            <div class="space-y-2">${optionsHtml}</div>
+            <div id="quiz-feedback" class="mt-4 text-sm font-semibold"></div>
+            <button id="next-quiz-btn" class="hidden mt-4 bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700">Siguiente</button>
+        `;
+
+        document.querySelectorAll('.quiz-option').forEach(optionBtn => {
+            optionBtn.addEventListener('click', handleOptionClick);
+        });
+        document.getElementById('next-quiz-btn').addEventListener('click', handleNextClick);
+    }
+
+    function handleOptionClick(e) {
+        const selectedIndex = parseInt(e.target.dataset.index);
+        const correctIndex = quizData[currentQuestionIndex].correct;
+        const feedbackEl = document.getElementById('quiz-feedback');
+
+        document.querySelectorAll('.quiz-option').forEach(btn => {
+            btn.disabled = true;
+            btn.classList.remove('hover:bg-stone-200');
+        });
+
+        if (selectedIndex === correctIndex) {
+            e.target.classList.add('bg-green-200');
+            feedbackEl.textContent = '¡Correcto!';
+            feedbackEl.className = 'mt-4 text-sm font-semibold text-green-700';
+        } else {
+            e.target.classList.add('bg-red-200');
+            document.querySelector(`.quiz-option[data-index="${correctIndex}"]`).classList.add('bg-green-200');
+            feedbackEl.textContent = 'No exactamente. La respuesta correcta está resaltada en verde.';
+            feedbackEl.className = 'mt-4 text-sm font-semibold text-red-700';
+        }
+
+        if (currentQuestionIndex < quizData.length - 1) {
+            document.getElementById('next-quiz-btn').classList.remove('hidden');
+        } else {
+             feedbackEl.textContent += ' ¡Has completado el refuerzo!';
+        }
+    }
+
+    function handleNextClick() {
+        currentQuestionIndex++;
+        renderQuiz();
+    }
+
+    renderQuiz();
+
+    const checklists = document.querySelectorAll('#practice-checklist, #homework-checklist');
+    checklists.forEach(list => {
+        list.addEventListener('change', (e) => {
+            if (e.target.type === 'checkbox') {
+                e.target.nextElementSibling.classList.toggle('line-through', e.target.checked);
+                e.target.nextElementSibling.classList.toggle('text-slate-400', e.target.checked);
+            }
+        });
+    });
+
+});
+</script>
+</body>
+</html>
